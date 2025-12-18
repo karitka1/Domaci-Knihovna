@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Domácí knihovna</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="header">
+  <h1>Domácí knihovna</h1>
+  <p>Evidence knih (client-side, LocalStorage, OOP)</p>
+</header>
+
+<main class="container">
+
+  <section class="card">
+    <h2>Přidat / upravit knihu</h2>
+
+    <form id="bookForm" class="form">
+      <input type="hidden" id="bookId">
+
+      <div class="grid">
+        <label>
+          Název*
+          <input id="title" required placeholder="Např. Hobit">
+        </label>
+
+        <label>
+          Autor*
+          <input id="author" required placeholder="Např. J. R. R. Tolkien">
+        </label>
+
+        <label>
+          Žánr
+          <select id="genre">
+            <option value="">-- vyber žánr --</option>
+            <option>Fantasy</option>
+            <option>Sci-fi</option>
+            <option>Detektivka</option>
+            <option>Román</option>
+            <option>Historický</option>
+            <option>Thriller</option>
+            <option>Horor</option>
+            <option>Biografie</option>
+            <option>Poezie</option>
+            <option>Odborná literatura</option>
+            <option>Dětská literatura</option>
+          </select>
+        </label>
+
+        <label>
+          Stav
+          <select id="status">
+            <option value="wishlist">Chci</option>
+            <option value="reading">Čtu</option>
+            <option value="done">Dočteno</option>
+          </select>
+        </label>
+
+        <label>
+          Hodnocení (0–5)
+          <input id="rating" type="number" min="0" max="5" value="0">
+        </label>
+
+        <label class="span2">
+          Poznámka
+          <input id="note" placeholder="Krátká poznámka…">
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" type="submit">Uložit</button>
+        <button class="btn" type="button" id="resetBtn">Zrušit úpravu</button>
+      </div>
+
+      <p class="hint" id="formHint"></p>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Seznam knih</h2>
+
+    <div class="toolbar">
+      <input id="search" placeholder="Vyhledat (název / autor)">
+      <select id="filterStatus">
+        <option value="all">Všechny stavy</option>
+        <option value="wishlist">Chci</option>
+        <option value="reading">Čtu</option>
+        <option value="done">Dočteno</option>
+      </select>
+
+      <select id="filterGenre">
+        <option value="">Všechny žánry</option>
+        <option>Fantasy</option>
+        <option>Sci-fi</option>
+        <option>Detektivka</option>
+        <option>Román</option>
+        <option>Historický</option>
+        <option>Thriller</option>
+        <option>Horor</option>
+        <option>Biografie</option>
+        <option>Poezie</option>
+        <option>Odborná literatura</option>
+        <option>Dětská literatura</option>
+      </select>
+
+      <select id="sortBy">
+        <option value="title">Řadit: Název</option>
+        <option value="author">Řadit: Autor</option>
+        <option value="rating_desc">Řadit: Hodnocení ↓</option>
+      </select>
+    </div>
+
+    <div id="list" class="list"></div>
+    <p class="hint" id="listHint"></p>
+  </section>
+
+</main>
+
+<script src="app.js" defer></script>
+</body>
+</html>
