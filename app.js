@@ -145,7 +145,9 @@ function render() {
 
   books.forEach(b => {
     const div = document.createElement("div");
-    div.className = "item";
+
+    // CSS třída pro barevné oddělení knih podle stavu
+    div.className = `item status-${b.status}`;
 
     const stavText =
       b.status === "done" ? "Dočteno" :
