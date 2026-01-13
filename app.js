@@ -1,9 +1,21 @@
+/*
+  Domácí knihovna – app.js
+  Tento skript řeší logiku aplikace:
+  - práce s datovým modelem knihy + validace
+  - ukládání a načítání knih z localStorage
+  - filtrování, vyhledávání a řazení
+  - vykreslení seznamu do HTML
+  - obsluha událostí (uložení, úprava, smazání, filtry)
+*/
+
 // ===== Utils =====
+// Pomocná funkce pro vytvoření unikátního ID (využívá crypto.randomUUID)
 function makeId(prefix = "id") {
   return `${prefix}_${crypto.randomUUID()}`;
 }
 
 // ===== Model =====
+// Třída Book reprezentuje jednu knihu a sjednocuje/čistí vstupní data
 class Book {
   constructor(data) {
     this.id = data.id;
@@ -15,6 +27,7 @@ class Book {
     this.note = data.note.trim();
   }
 
+  // Validace základních pravidel formuláře
   validate() {
     if (!this.title) return "Název je povinný.";
     if (!this.author) return "Autor je povinný.";
@@ -24,6 +37,7 @@ class Book {
 }
 
 // ===== Repository =====
+// Vrstva pro ukládání/načítání dat (localStorage)
 class BookRepository {
   constructor() {
     this.key = "domaciKnihovna.books.v1";
@@ -39,12 +53,14 @@ class BookRepository {
 }
 
 // ===== Service =====
+// Aplikační logika knihovny (CRUD + listování s filtry)
 class LibraryService {
   constructor(repo) {
     this.repo = repo;
     this.books = repo.load();
   }
 
+  // Vrátí seznam knih podle vyhledávání / filtrů / řazení
   list(filters) {
     let out = [...this.books];
 
@@ -73,6 +89,7 @@ class LibraryService {
     return out;
   }
 
+  // Přidání nové knihy
   add(data) {
     const book = new Book({ ...data, id: makeId("book") });
     const err = book.validate();
@@ -81,6 +98,7 @@ class LibraryService {
     this.repo.save(this.books);
   }
 
+  // Úprava existující knihy podle ID
   update(id, data) {
     const i = this.books.findIndex(b => b.id === id);
     if (i === -1) return;
@@ -91,17 +109,20 @@ class LibraryService {
     this.repo.save(this.books);
   }
 
+  // Smazání knihy podle ID
   remove(id) {
     this.books = this.books.filter(b => b.id !== id);
     this.repo.save(this.books);
   }
 
+  // Získání konkrétní knihy podle ID (např. pro editaci)
   get(id) {
     return this.books.find(b => b.id === id);
   }
 }
 
 // ===== App =====
+// Inicializace služby + načtení prvků z HTML (napojení na formulář a ovládání)
 const service = new LibraryService(new BookRepository());
 
 const form = document.getElementById("bookForm");
@@ -123,6 +144,7 @@ const filterGenre = document.getElementById("filterGenre");
 const sortBy = document.getElementById("sortBy");
 const resetBtn = document.getElementById("resetBtn");
 
+// Vyčištění formuláře a návrat do „výchozího režimu přidávání“
 function clearForm() {
   bookId.value = "";
   form.reset();
@@ -130,6 +152,7 @@ function clearForm() {
   status.value = "wishlist";
 }
 
+// Vykreslení seznamu knih do HTML podle aktuálních filtrů
 function render() {
   const books = service.list({
     search: search.value,
@@ -146,13 +169,14 @@ function render() {
   books.forEach(b => {
     const div = document.createElement("div");
 
-    // CSS třída pro barevné oddělení knih podle stavu
+    // CSS třída podle stavu knihy (pro barevné odlišení)
     div.className = `item status-${b.status}`;
 
     const stavText =
       b.status === "done" ? "Dočteno" :
       b.status === "reading" ? "Čtu" : "Chci";
 
+    // Vytvoření obsahu jedné položky + tlačítka Upravit / Smazat
     div.innerHTML = `
       <div>
         <h3>${b.title}</h3>
@@ -170,6 +194,7 @@ function render() {
 }
 
 // ===== Events =====
+// Odeslání formuláře: přidání nebo úprava knihy (podle toho, jestli je vyplněné bookId)
 form.addEventListener("submit", e => {
   e.preventDefault();
 
@@ -192,8 +217,10 @@ form.addEventListener("submit", e => {
   }
 });
 
+// Tlačítko pro zrušení úpravy / vyčištění formuláře
 resetBtn.addEventListener("click", clearForm);
 
+// Klikání v seznamu: řeší editaci a mazání přes data atributy (event delegation)
 list.addEventListener("click", e => {
   if (e.target.dataset.edit) {
     const b = service.get(e.target.dataset.edit);
@@ -214,8 +241,10 @@ list.addEventListener("click", e => {
   }
 });
 
+// Při změně vyhledávání/filtrů/řazení se znovu překreslí seznam
 [search, filterStatus, filterGenre, sortBy].forEach(el =>
   el.addEventListener("input", render)
 );
 
+// První vykreslení po načtení stránky
 render();

@@ -1,6 +1,12 @@
 <!doctype html>
+<!--
+  Domácí knihovna
+  HTML struktura webové aplikace pro správu knih.
+  Stylování je řešeno pomocí styles.css, aplikační logika pomocí app.js.
+-->
 <html lang="cs">
 <head>
+  <!-- Základní nastavení dokumentu -->
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Domácí knihovna</title>
@@ -8,19 +14,30 @@
 </head>
 <body>
 
+<!-- Hlavička aplikace s názvem -->
 <header class="header">
   <h1 class="title">Domácí knihovna</h1>
 </header>
 
+<!-- Hlavní obsah aplikace -->
 <main class="container">
 
+  <!--
+    Sekce pro přidání nebo úpravu knihy.
+    Uživatel zde zadává informace o knize pomocí formuláře.
+  -->
   <section class="card">
     <h2>Přidat / upravit knihu</h2>
 
+    <!-- Formulář pro práci s knihami -->
     <form id="bookForm" class="form">
+      <!-- Skryté ID knihy (využívá se při editaci) -->
       <input type="hidden" id="bookId">
 
+      <!-- Vstupní pole formuláře -->
       <div class="grid">
+
+        <!-- Povinné základní údaje o knize -->
         <label>
           Název*
           <input id="title" required placeholder="Např. Hobit">
@@ -31,6 +48,7 @@
           <input id="author" required placeholder="Např. J. R. R. Tolkien">
         </label>
 
+        <!-- Doplňující informace o knize -->
         <label>
           Žánr
           <select id="genre">
@@ -63,26 +81,36 @@
           <input id="rating" type="number" min="0" max="5" value="0">
         </label>
 
+        <!-- Poznámka ke knize -->
         <label class="span2">
           Poznámka
           <input id="note" placeholder="Krátká poznámka…">
         </label>
       </div>
 
+      <!-- Ovládací tlačítka formuláře -->
       <div class="actions">
         <button class="btn primary" type="submit">Uložit</button>
         <button class="btn" type="button" id="resetBtn">Zrušit úpravu</button>
       </div>
 
+      <!-- Informační nebo chybové hlášky formuláře -->
       <p class="hint" id="formHint"></p>
     </form>
   </section>
 
+  <!--
+    Sekce seznamu knih.
+    Obsahuje nástroje pro vyhledávání, filtrování, řazení
+    a samotný seznam uložených knih.
+  -->
   <section class="card">
     <h2 class="title">Seznam knih</h2>
 
+    <!-- Panel nástrojů pro práci se seznamem -->
     <div class="toolbar">
       <input id="search" placeholder="Vyhledat (název / autor)">
+
       <select id="filterStatus">
         <option value="all">Všechny stavy</option>
         <option value="wishlist">Chci</option>
@@ -112,12 +140,17 @@
       </select>
     </div>
 
+    <!-- Dynamicky generovaný seznam knih -->
     <div id="list" class="list"></div>
+
+    <!-- Informační hlášky k seznamu -->
     <p class="hint" id="listHint"></p>
   </section>
 
 </main>
 
+<!-- Připojení JavaScriptu s aplikační logikou -->
 <script src="app.js" defer></script>
+
 </body>
 </html>
